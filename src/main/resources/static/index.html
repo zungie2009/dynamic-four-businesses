@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Four Business Demo</title>
+<style>
+  * { box-sizing: border-box; }
+  :root {
+    --bg: #f4f6f8; --surface: #ffffff; --text: #1f2933; --muted: #616e7c;
+    --primary: #1d5fa8; --primary-text: #ffffff; --border: #dde3ea; --accent: #e8f0fb;
+  }
+  html[data-theme="professional-blue"] { --bg:#f2f6fb; --surface:#ffffff; --text:#152238; --muted:#5b6b82;
+    --primary:#1d5fa8; --primary-text:#ffffff; --border:#d7e2f0; --accent:#e5eefb; }
+  html[data-theme="graphite"] { --bg:#e9eaec; --surface:#ffffff; --text:#202225; --muted:#5c6066;
+    --primary:#3a3f47; --primary-text:#ffffff; --border:#d3d5d9; --accent:#eceef0; }
+  html[data-theme="high-contrast"] { --bg:#ffffff; --surface:#ffffff; --text:#000000; --muted:#000000;
+    --primary:#000000; --primary-text:#ffff00; --border:#000000; --accent:#fff6cc; }
+  html[data-theme="warm-hospitality"] { --bg:#fbf3ea; --surface:#fffdfa; --text:#3a2418; --muted:#8a6a52;
+    --primary:#b5562e; --primary-text:#ffffff; --border:#ecd9c6; --accent:#f7e6d6; }
+  html[data-theme="bistro-dark"] { --bg:#241a15; --surface:#2f231c; --text:#f2e6da; --muted:#c2a892;
+    --primary:#d97b3f; --primary-text:#241a15; --border:#4a382c; --accent:#3c2c22; }
+  html[data-theme="structured-commerce"] { --bg:#eef1f4; --surface:#ffffff; --text:#1a222c; --muted:#5a6a7a;
+    --primary:#2a6f5e; --primary-text:#ffffff; --border:#d6dee3; --accent:#e3f0ec; }
+  html[data-theme="midnight-market"] { --bg:#12161f; --surface:#1a2030; --text:#e6eaf2; --muted:#8f9ab0;
+    --primary:#4f8cff; --primary-text:#0b0e14; --border:#2c3550; --accent:#20263a; }
+  html[data-theme="calm-property"] { --bg:#eef3f1; --surface:#ffffff; --text:#1e2b27; --muted:#5f776e;
+    --primary:#3f7d63; --primary-text:#ffffff; --border:#d7e5df; --accent:#e3efe9; }
+  html[data-theme="terracotta"] { --bg:#f7ede4; --surface:#fffaf5; --text:#3d2b20; --muted:#8a6b56;
+    --primary:#b6603a; --primary-text:#ffffff; --border:#ecd7c4; --accent:#f4e3d3; }
+
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); }
+  .app-shell { display: flex; min-height: 100vh; }
+  aside { width: 230px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+  aside .brand { padding: 18px 16px; font-weight: 700; font-size: 15px; border-bottom: 1px solid var(--border); }
+  aside .brand .sub { font-weight: 400; font-size: 12px; color: var(--muted); margin-top: 2px; }
+  aside nav { flex: 1; overflow-y: auto; }
+  aside nav button { display: block; width: 100%; text-align: left; background: none; border: none; color: var(--text); padding: 10px 16px; cursor: pointer; font-size: 13.5px; border-left: 3px solid transparent; }
+  aside nav button:hover { background: var(--accent); }
+  aside nav button.active { border-left-color: var(--primary); font-weight: 600; background: var(--accent); }
+  aside .admin-slot { border-top: 1px solid var(--border); }
+  main { flex: 1; padding: 20px 28px; max-width: 1100px; }
+  .topbar { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+  .switcher { display: flex; gap: 6px; }
+  .switcher button { border: 1px solid var(--border); background: var(--surface); color: var(--text); padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; }
+  .switcher button.active { background: var(--primary); color: var(--primary-text); border-color: var(--primary); }
+  .notice { background: var(--accent); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 18px; }
+  h2 { margin-top: 0; font-size: 17px; }
+  .row { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+  input, select { padding: 7px 9px; border: 1px solid var(--border); border-radius: 6px; font-size: 13.5px; background: var(--surface); color: var(--text); }
+  label.field-label { display: block; font-size: 11.5px; color: var(--muted); margin-bottom: 4px; }
+  .field-group { min-width: 160px; }
+  button.primary { background: var(--primary); color: var(--primary-text); border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13.5px; }
+  button.secondary { background: var(--accent); color: var(--text); border: 1px solid var(--border); padding: 6px 11px; border-radius: 6px; cursor: pointer; font-size: 12.5px; }
+  button.link { background: none; border: none; color: var(--primary); cursor: pointer; text-decoration: underline; font-size: 12.5px; padding: 0; }
+  button.danger { color: #b3261e; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  th { color: var(--muted); font-weight: 600; font-size: 10.5px; text-transform: uppercase; }
+  .empty { color: var(--muted); font-style: italic; padding: 14px 0; }
+  .error { color: #c0392b; font-size: 12.5px; margin-top: 6px; }
+  .success { color: #2a6f5e; font-size: 12.5px; margin-top: 6px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; background: var(--accent); border: 1px solid var(--border); }
+  .muted { color: var(--muted); font-size: 12px; }
+  .theme-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+  .theme-swatch { border: 2px solid var(--border); border-radius: 8px; padding: 10px 14px; cursor: pointer; background: var(--surface); font-size: 12.5px; }
+  .theme-swatch.active { border-color: var(--primary); font-weight: 600; }
+  .readonly-field { padding: 7px 0; font-size: 13.5px; }
+  .readonly-field .value { font-weight: 600; }
+  .transitions { display: flex; gap: 6px; flex-wrap: wrap; }
+  dl.admin-grid { display: grid; grid-template-columns: max-content 1fr; row-gap: 10px; column-gap: 16px; align-items: center; max-width: 480px; }
+  dl.admin-grid dt { font-size: 12px; color: var(--muted); }
+  dl.admin-grid dd { margin: 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+const I18N = {
+  "en-US": { add:"Add", edit:"Edit", save:"Save", cancel:"Cancel", delete:"Delete", search:"Search", clear:"Clear",
+    administration:"Administration", theme:"Theme", switchUser:"Switch user", noRecords:"No records yet.",
+    confirmDelete:"Delete this record?", currentStatus:"Status", apply:"Apply",
+    demoNotice:"Demo mode: switching identities here does not require authentication. In production this selector would be replaced by real, server-resolved login.",
+    chooseUser:"Choose a business", dashboard:"Dashboard", businessName:"Business name", notifications:"Notifications",
+    enabled:"Enabled", disabled:"Disabled", locale:"Language & locale", schemaVersion:"Schema version",
+    persistencePartition:"Storage partition", savedNotice:"Saved.", saveFailed:"Could not save." },
+  "fr-FR": { add:"Ajouter", edit:"Modifier", save:"Enregistrer", cancel:"Annuler", delete:"Supprimer", search:"Rechercher", clear:"Effacer",
+    administration:"Administration", theme:"Thème", switchUser:"Changer d'utilisateur", noRecords:"Aucun enregistrement pour l'instant.",
+    confirmDelete:"Supprimer cet enregistrement ?", currentStatus:"Statut", apply:"Appliquer",
+    demoNotice:"Mode démo : changer d'identité ici ne nécessite pas d'authentification. En production, ce sélecteur serait remplacé par une connexion réelle résolue côté serveur.",
+    chooseUser:"Choisissez une entreprise", dashboard:"Tableau de bord", businessName:"Nom de l'entreprise", notifications:"Notifications",
+    enabled:"Activées", disabled:"Désactivées", locale:"Langue et paramètres régionaux", schemaVersion:"Version du schéma",
+    persistencePartition:"Partition de stockage", savedNotice:"Enregistré.", saveFailed:"Échec de l'enregistrement." },
+  "de-DE": { add:"Hinzufügen", edit:"Bearbeiten", save:"Speichern", cancel:"Abbrechen", delete:"Löschen", search:"Suchen", clear:"Leeren",
+    administration:"Verwaltung", theme:"Design", switchUser:"Benutzer wechseln", noRecords:"Noch keine Einträge.",
+    confirmDelete:"Diesen Eintrag löschen?", currentStatus:"Status", apply:"Anwenden",
+    demoNotice:"Demomodus: Das Wechseln der Identität hier erfordert keine Authentifizierung. In der Produktion würde dieser Umschalter durch eine echte, serverseitig aufgelöste Anmeldung ersetzt.",
+    chooseUser:"Wählen Sie ein Unternehmen", dashboard:"Übersicht", businessName:"Firmenname", notifications:"Benachrichtigungen",
+    enabled:"Aktiviert", disabled:"Deaktiviert", locale:"Sprache und Gebietsschema", schemaVersion:"Schemaversion",
+    persistencePartition:"Speicherpartition", savedNotice:"Gespeichert.", saveFailed:"Speichern fehlgeschlagen." },
+  "es-ES": { add:"Añadir", edit:"Editar", save:"Guardar", cancel:"Cancelar", delete:"Eliminar", search:"Buscar", clear:"Limpiar",
+    administration:"Administración", theme:"Tema", switchUser:"Cambiar de usuario", noRecords:"Todavía no hay registros.",
+    confirmDelete:"¿Eliminar este registro?", currentStatus:"Estado", apply:"Aplicar",
+    demoNotice:"Modo de demostración: cambiar de identidad aquí no requiere autenticación. En producción, este selector se sustituiría por un inicio de sesión real resuelto por el servidor.",
+    chooseUser:"Elija un negocio", dashboard:"Panel", businessName:"Nombre del negocio", notifications:"Notificaciones",
+    enabled:"Activadas", disabled:"Desactivadas", locale:"Idioma y configuración regional", schemaVersion:"Versión del esquema",
+    persistencePartition:"Partición de almacenamiento", savedNotice:"Guardado.", saveFailed:"No se pudo guardar." },
+};
+
+let state = { container: null, userId: null, schema: null, entityId: null, view: "entity" };
+
+function t(key) { return (I18N[state.schema?.locale] || I18N["en-US"])[key] || key; }
+function escapeHtml(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c])); }
+async function api(path, options) {
+  const res = await fetch(path, options);
+  const body = await res.json().catch(() => ({}));
+  return { ok: res.ok, status: res.status, body };
+}
+
+async function init() {
+  const { body } = await api("/api/container");
+  state.container = body;
+  await loadBusiness(body.defaultUser);
+}
+
+async function loadBusiness(userId) {
+  const { body: schema } = await api("/api/" + encodeURIComponent(userId) + "/schema");
+  state.userId = userId;
+  state.schema = schema;
+  state.entityId = schema.entities[0] ? schema.entities[0].id : null;
+  state.view = "entity";
+  document.documentElement.setAttribute("data-theme", schema.theme);
+  document.documentElement.setAttribute("lang", schema.locale.split("-")[0]);
+  render();
+}
+
+function render() {
+  const root = document.getElementById("root");
+  const schema = state.schema;
+  root.innerHTML = `
+    <div class="app-shell">
+      <aside>
+        <div class="brand">${escapeHtml(schema.business)}<div class="sub">${escapeHtml(schema.person)} &middot; ${escapeHtml(schema.language)}</div></div>
+        <nav id="entityNav"></nav>
+        <div class="admin-slot"><nav><button id="adminBtn" data-view="administration">${escapeHtml(t("administration"))}</button></nav></div>
+      </aside>
+      <main>
+        <div class="topbar">
+          <div class="switcher" id="switcher"></div>
+        </div>
+        <div class="notice">${escapeHtml(state.container.accessWarning)}</div>
+        <div id="content"></div>
+      </main>
+    </div>`;
+
+  const nav = document.getElementById("entityNav");
+  for (const e of schema.entities) {
+    const btn = document.createElement("button");
+    btn.textContent = e.name;
+    btn.dataset.entity = e.id;
+    if (state.view === "entity" && state.entityId === e.id) btn.classList.add("active");
+    btn.addEventListener("click", () => { state.view = "entity"; state.entityId = e.id; render(); });
+    nav.appendChild(btn);
+  }
+  document.getElementById("adminBtn").classList.toggle("active", state.view === "administration");
+  document.getElementById("adminBtn").addEventListener("click", () => { state.view = "administration"; render(); });
+
+  const switcher = document.getElementById("switcher");
+  for (const u of state.container.users) {
+    const btn = document.createElement("button");
+    btn.textContent = u.person;
+    btn.title = u.business + " (" + u.language + ")";
+    if (u.userId === state.userId) btn.classList.add("active");
+    btn.addEventListener("click", () => loadBusiness(u.userId));
+    switcher.appendChild(btn);
+  }
+
+  const content = document.getElementById("content");
+  // Switching users while Administration is open reconstructs the Administration view for the
+  // newly active business without merging state - render() always re-fetches from scratch below.
+  if (state.view === "administration") renderAdministration(content);
+  else renderEntity(content, state.entityId);
+}
+
+async function renderAdministration(content) {
+  const { body } = await api("/api/" + state.userId + "/administration");
+  content.innerHTML = `
+    <div class="panel">
+      <h2>${escapeHtml(t("administration"))}</h2>
+      <div class="row field-group">
+        <div style="width:100%">
+          <label class="field-label" for="adminBusinessName">${escapeHtml(t("businessName"))}</label>
+          <input type="text" id="adminBusinessName" value="${escapeHtml(body.businessName)}" style="width:280px">
+        </div>
+      </div>
+      <p class="muted">${escapeHtml(t("theme"))}</p>
+      <div class="theme-grid" id="themes"></div>
+      <div class="row field-group" style="margin-top:14px">
+        <div>
+          <label class="field-label" for="adminNotifications">${escapeHtml(t("notifications"))}</label>
+          <select id="adminNotifications">
+            <option value="true" ${body.notifications ? "selected" : ""}>${escapeHtml(t("enabled"))}</option>
+            <option value="false" ${!body.notifications ? "selected" : ""}>${escapeHtml(t("disabled"))}</option>
+          </select>
+        </div>
+      </div>
+      <dl class="admin-grid" style="margin-top:14px">
+        <dt>${escapeHtml(t("locale"))}</dt><dd class="readonly-field"><span class="value">${escapeHtml(body.locale)}</span></dd>
+        <dt>${escapeHtml(t("schemaVersion"))}</dt><dd class="readonly-field"><span class="value">${escapeHtml(body.schemaVersion)}</span></dd>
+        <dt>${escapeHtml(t("persistencePartition"))}</dt><dd class="readonly-field"><span class="value">${escapeHtml(body.persistencePartition)}</span></dd>
+      </dl>
+      <div class="row" style="margin-top:16px">
+        <button class="primary" id="adminSave">${escapeHtml(t("save"))}</button>
+      </div>
+      <div id="adminMsg"></div>
+    </div>`;
+
+  let selectedTheme = body.theme;
+  function renderThemes() {
+    const grid = document.getElementById("themes");
+    grid.innerHTML = "";
+    for (const theme of body.allowedThemes) {
+      const el = document.createElement("div");
+      el.className = "theme-swatch" + (theme === selectedTheme ? " active" : "");
+      el.textContent = theme;
+      el.addEventListener("click", () => { selectedTheme = theme; renderThemes(); });
+      grid.appendChild(el);
+    }
+  }
+  renderThemes();
+
+  document.getElementById("adminSave").addEventListener("click", async () => {
+    const payload = {
+      businessName: document.getElementById("adminBusinessName").value.trim(),
+      theme: selectedTheme,
+      notifications: document.getElementById("adminNotifications").value === "true",
+      locale: body.locale,
+      schemaVersion: body.schemaVersion,
+      persistencePartition: body.persistencePartition
+    };
+    const { ok, body: res } = await api("/api/" + state.userId + "/administration", {
+      method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    const msg = document.getElementById("adminMsg");
+    if (!ok) { msg.className = "error"; msg.textContent = res.message || t("saveFailed"); return; }
+    msg.className = "success"; msg.textContent = t("savedNotice");
+    document.documentElement.setAttribute("data-theme", selectedTheme);
+    // Business name may have changed - refresh the brand header and switcher without a full reload.
+    const schemaResp = await api("/api/" + state.userId + "/schema");
+    state.schema = schemaResp.body;
+    const containerResp = await api("/api/container");
+    state.container = containerResp.body;
+    render();
+  });
+}
+
+async function renderEntity(content, entityId) {
+  const schema = state.schema;
+  const entity = schema.entities.find(e => e.id === entityId);
+  if (!entity) { content.innerHTML = `<div class="panel empty">Unknown entity.</div>`; return; }
+  const workflow = entity.workflowId ? schema.workflows.find(w => w.id === entity.workflowId) : null;
+  const editableFields = entity.fields.filter(f => !(workflow && f.id === workflow.stateField));
+
+  // Preload REFERENCE target lists for pickers and display-label resolution, using each
+  // referenced entity's own declared displayField rather than guessing at "the first string field".
+  const refCache = {};
+  for (const f of entity.fields) {
+    if (f.type === "REFERENCE" && !refCache[f.referenceEntity]) {
+      const { body } = await api("/api/" + state.userId + "/records/" + f.referenceEntity + "?pageSize=1000");
+      refCache[f.referenceEntity] = body.records || [];
+    }
+  }
+  function displayFieldOf(entityId2) {
+    const e = schema.entities.find(x => x.id === entityId2);
+    return e ? e.displayField : "id";
+  }
+  function labelForRef(entityId2, recordId) {
+    const list = refCache[entityId2] || [];
+    const rec = list.find(r => r.id === recordId);
+    if (!rec) return recordId;
+    return rec[displayFieldOf(entityId2)] ?? recordId;
+  }
+  function displayValue(f, record) {
+    const raw = record[f.id];
+    if (raw === undefined || raw === null || raw === "") return "";
+    if (f.type === "REFERENCE") return labelForRef(f.referenceEntity, raw);
+    if (f.type === "ENUM") return (f.localizedEnumLabels && f.localizedEnumLabels[raw]) || raw;
+    return raw;
+  }
+
+  content.innerHTML = `
+    <div class="panel">
+      <div class="row">
+        <input type="text" id="search" placeholder="${escapeHtml(t('search'))}...">
+        <button class="primary" id="searchBtn">${escapeHtml(t('search'))}</button>
+        <button class="link" id="clearBtn">${escapeHtml(t('clear'))}</button>
+      </div>
+      <div class="row">${editableFields.map(f => fieldInputHtml(f, refCache, displayFieldOf)).join("")}
+        <button class="primary" id="addBtn">${escapeHtml(t('add'))}</button></div>
+      <div id="formError" class="error"></div>
+      <table><thead><tr>${entity.fields.map(f => `<th>${escapeHtml(f.label)}</th>`).join("")}<th></th></tr></thead><tbody id="rows"></tbody></table>
+      <div id="empty" class="empty" style="display:none">${escapeHtml(t('noRecords'))}</div>
+    </div>`;
+
+  async function load(q) {
+    const { body } = await api("/api/" + state.userId + "/records/" + entityId + (q ? ("?q=" + encodeURIComponent(q)) : ""));
+    const rows = document.getElementById("rows"); const empty = document.getElementById("empty");
+    rows.innerHTML = ""; const list = body.records || [];
+    empty.style.display = list.length ? "none" : "block";
+    for (const r of list) {
+      const tr = document.createElement("tr");
+      const cells = entity.fields.map(f => {
+        const val = displayValue(f, r);
+        if (workflow && f.id === workflow.stateField) return `<td><span class="badge">${escapeHtml(val)}</span></td>`;
+        return `<td>${escapeHtml(val)}</td>`;
+      }).join("");
+      let actionCell = `<button class="link danger del">${escapeHtml(t('delete'))}</button>`;
+      if (workflow) {
+        const current = r[workflow.stateField];
+        // uiTrigger: ROW_ACTION_BUTTONS_FOR_ALLOWED_TRANSITIONS - one button per currently
+        // allowed transition, each labeled with that transition's own localized action label.
+        const allowed = workflow.transitions.filter(tr2 => tr2.from === current);
+        const buttons = allowed.map(tr2 => `<button class="secondary transitionBtn" data-to="${escapeHtml(tr2.to)}">${escapeHtml(tr2.actionLabel)}</button>`).join(" ");
+        actionCell = `<span class="transitions">${buttons}</span> ` + actionCell;
+      }
+      tr.innerHTML = cells + `<td>${actionCell}</td>`;
+      const del = tr.querySelector(".del");
+      del.addEventListener("click", async () => {
+        if (!confirm(t("confirmDelete"))) return;
+        const { ok, body: res } = await api("/api/" + state.userId + "/records/" + entityId + "/" + r.id, { method: "DELETE" });
+        if (!ok) { alert(res.message || "Delete failed"); return; }
+        load(document.getElementById("search").value.trim());
+      });
+      for (const btn of tr.querySelectorAll(".transitionBtn")) {
+        btn.addEventListener("click", async () => {
+          const { ok, body: res } = await api("/api/" + state.userId + "/records/" + entityId + "/" + r.id + "/transition", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ to: btn.dataset.to, _activeEntity: entityId }) });
+          if (!ok) { alert(res.message); return; }
+          load(document.getElementById("search").value.trim());
+        });
+      }
+      rows.appendChild(tr);
+    }
+  }
+
+  document.getElementById("searchBtn").addEventListener("click", () => load(document.getElementById("search").value.trim()));
+  document.getElementById("search").addEventListener("keydown", e => { if (e.key === "Enter") load(e.target.value.trim()); });
+  document.getElementById("clearBtn").addEventListener("click", () => { document.getElementById("search").value = ""; load(""); });
+  document.getElementById("addBtn").addEventListener("click", async () => {
+    const payload = { _activeEntity: entityId };
+    for (const f of editableFields) {
+      const el = document.getElementById("f_" + f.id);
+      payload[f.id] = el.value.trim();
+    }
+    document.getElementById("formError").textContent = "";
+    const { ok, body: res } = await api("/api/" + state.userId + "/records/" + entityId, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    if (!ok) { document.getElementById("formError").textContent = res.message || "Could not add record."; return; }
+    for (const f of editableFields) document.getElementById("f_" + f.id).value = "";
+    load("");
+  });
+  load("");
+}
+
+/** Renders the control declared by uiNeuron.fieldTypeControlMap for this field's type
+ * (TEXT_INPUT/EMAIL_INPUT/INTEGER_INPUT/DATE_INPUT/DECIMAL_INPUT/LOCALIZED_SELECT/
+ * SAME_PARTITION_ENTITY_PICKER) rather than one generic text box for everything. */
+function fieldInputHtml(f, refCache, displayFieldOf) {
+  if (f.type === "ENUM") {
+    const options = f.enumValues.map(v => `<option value="${escapeHtml(v)}">${escapeHtml((f.localizedEnumLabels && f.localizedEnumLabels[v]) || v)}</option>`).join("");
+    return `<select id="f_${f.id}"><option value="">${escapeHtml(f.label)}...</option>${options}</select>`;
+  }
+  if (f.type === "REFERENCE") {
+    const list = refCache[f.referenceEntity] || [];
+    const displayField = displayFieldOf(f.referenceEntity);
+    return `<select id="f_${f.id}"><option value="">${escapeHtml(f.label)}...</option>${list.map(r =>
+      `<option value="${escapeHtml(r.id)}">${escapeHtml(r[displayField] ?? r.id)}</option>`).join("")}</select>`;
+  }
+  if (f.type === "DECIMAL_19_2") return `<input type="number" step="0.01" id="f_${f.id}" placeholder="${escapeHtml(f.label)}">`;
+  if (f.type === "INTEGER") return `<input type="number" step="1" id="f_${f.id}" placeholder="${escapeHtml(f.label)}">`;
+  if (f.type === "ISO_DATE") return `<input type="date" id="f_${f.id}" placeholder="${escapeHtml(f.label)}">`;
+  if (f.type === "EMAIL") return `<input type="email" id="f_${f.id}" placeholder="${escapeHtml(f.label)}">`;
+  return `<input type="text" id="f_${f.id}" placeholder="${escapeHtml(f.label)}">`;
+}
+
+init();
+</script>
+</body>
+</html>

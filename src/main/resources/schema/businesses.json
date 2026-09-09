@@ -1,0 +1,1281 @@
+{
+  "container": {
+    "defaultUser": "robert",
+    "accessMode": "DEMONSTRATION_USER_SWITCHER",
+    "accessWarning": "The selector intentionally permits switching among all four demo identities; replace it with authenticated server-resolved identity for production.",
+    "productionAuthentication": false
+  },
+  "uiNeuron": {
+    "fieldTypeControlMap": {
+      "REFERENCE": "SAME_PARTITION_ENTITY_PICKER",
+      "STRING": "TEXT_INPUT",
+      "ENUM": "LOCALIZED_SELECT",
+      "INTEGER": "INTEGER_INPUT",
+      "ISO_DATE": "DATE_INPUT",
+      "EMAIL": "EMAIL_INPUT",
+      "DECIMAL_19_2": "DECIMAL_INPUT"
+    },
+    "enumDisplay": "BUSINESS_LOCALE_LABEL",
+    "enumStorage": "CANONICAL_UPPERCASE_VALUE",
+    "projectionRule": "REPLACE_NOT_MERGE",
+    "unrestrictedStatusEditing": false
+  },
+  "administration": {
+    "surfaceRequired": true,
+    "surfaceType": "STANDALONE_NAVIGATION_VIEW",
+    "route": "/administration",
+    "navigationPosition": "BOTTOM_LEFT",
+    "visibleForEveryDemoUser": true,
+    "userAware": true,
+    "stateOwnership": "ACTIVE_BUSINESS_SELF",
+    "scope": "OWN_BUSINESS_ONLY",
+    "persistence": "SURVIVES_PROCESS_RESTART",
+    "reprojectOnUserChange": true,
+    "projectionRule": "REPLACE_NOT_MERGE",
+    "fields": [
+      {
+        "persisted": true,
+        "labelKey": "BUSINESS_DISPLAY_NAME",
+        "control": "TEXT_INPUT",
+        "required": true,
+        "editable": true,
+        "id": "businessName"
+      },
+      {
+        "persisted": true,
+        "labelKey": "THEME",
+        "control": "ALLOWED_THEME_SELECT",
+        "required": true,
+        "editable": true,
+        "id": "theme"
+      },
+      {
+        "persisted": true,
+        "labelKey": "NOTIFICATIONS",
+        "control": "LOCALIZED_ENABLED_DISABLED_SELECT",
+        "required": true,
+        "editable": true,
+        "id": "notifications"
+      },
+      {
+        "persisted": false,
+        "labelKey": "LANGUAGE_LOCALE",
+        "control": "READ_ONLY_TEXT",
+        "source": "ACTIVE_BUSINESS_SELF",
+        "editable": false,
+        "id": "locale"
+      },
+      {
+        "persisted": true,
+        "labelKey": "SCHEMA_VERSION",
+        "control": "READ_ONLY_TEXT",
+        "source": "ACTIVE_BUSINESS_PARTITION",
+        "editable": false,
+        "id": "schemaVersion"
+      },
+      {
+        "persisted": false,
+        "labelKey": "PERSISTENCE_PARTITION",
+        "control": "READ_ONLY_TEXT",
+        "source": "SERVER_RESOLVED_CONTEXT",
+        "editable": false,
+        "id": "persistencePartition"
+      }
+    ],
+    "actions": [
+      {
+        "validation": "REQUIRED_FIELDS_AND_ALLOWED_VALUES",
+        "control": "PRIMARY_BUTTON",
+        "auditEvents": [
+          "THEME_CHANGED",
+          "ADMINISTRATION_CHANGED"
+        ],
+        "writes": "ACTIVE_BUSINESS_PARTITION_ONLY",
+        "id": "SAVE_ADMINISTRATION"
+      }
+    ],
+    "accessWarningRequired": true,
+    "accessWarningSource": "containerSelf.accessWarning",
+    "labelsLocalizedByActiveBusiness": true,
+    "auditResponsibility": "NONE_USE_AUDIT_NEURON",
+    "acceptanceScenarios": [
+      "Administration appears as a bottom-left navigation item for every demo user.",
+      "Opening Administration renders every declared field and action; omission of the view or a required control is a build failure.",
+      "Switching users while Administration is open reconstructs the Administration view for the newly active business without merging state.",
+      "Saved business name, theme and notification preference survive a complete process restart and remain isolated from every other business.",
+      "Locale, schema version and persistence partition are visible but cannot be edited.",
+      "Every saved administrative mutation emits the declared partition-scoped audit event.",
+      "The view visibly states that the demo selector is not production authentication."
+    ]
+  },
+  "auditNeuron": {
+    "scope": "SHARED_CAPABILITY_WITH_BUSINESS_PARTITION_CONTEXT",
+    "eventFields": [
+      "timestamp",
+      "userId",
+      "businessAppId",
+      "entityId",
+      "operation",
+      "target"
+    ],
+    "administrationProducesAudit": false,
+    "events": [
+      "SEED_RECORD_CREATED",
+      "RECORD_CREATED",
+      "RECORD_DELETED",
+      "STATE_TRANSITION",
+      "THEME_CHANGED",
+      "ADMINISTRATION_CHANGED",
+      "DEMO_SEED_COMPLETED"
+    ],
+    "rule": "The business operation or persistence boundary emits audit events; Administration does not own auditing.",
+    "ordinaryReadsAudited": false
+  },
+  "businesses": [
+    {
+      "userId": "robert",
+      "person": "Robert",
+      "applicationId": "ROBERT_CONSULTING",
+      "business": "Consulting Company",
+      "language": "English",
+      "locale": "en-US",
+      "defaultTheme": "professional-blue",
+      "allowedThemes": [
+        "professional-blue",
+        "graphite",
+        "high-contrast"
+      ],
+      "persistencePartition": "robert/robert_consulting",
+      "administrationScope": "OWN_BUSINESS_ONLY",
+      "entities": [
+        {
+          "id": "clients",
+          "name": "Client",
+          "displayField": "name",
+          "secondaryDisplayField": "email",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Name",
+              "type": "STRING",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "email",
+              "label": "Email",
+              "type": "EMAIL",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "company",
+              "label": "Company",
+              "type": "STRING",
+              "required": false,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            }
+          ]
+        },
+        {
+          "id": "engagements",
+          "name": "Engagement",
+          "displayField": "name",
+          "secondaryDisplayField": "status",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Name",
+              "type": "STRING",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "clientId",
+              "label": "Client",
+              "type": "REFERENCE",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "clients",
+              "precision": {}
+            },
+            {
+              "id": "status",
+              "label": "Status",
+              "type": "ENUM",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [
+                "PLANNED",
+                "ACTIVE",
+                "ON_HOLD",
+                "COMPLETED"
+              ],
+              "localizedEnumLabels": {
+                "PLANNED": "Planned",
+                "ACTIVE": "Active",
+                "ON_HOLD": "On hold",
+                "COMPLETED": "Completed"
+              },
+              "referenceEntity": "",
+              "precision": {}
+            }
+          ]
+        },
+        {
+          "id": "invoices",
+          "name": "Invoice",
+          "displayField": "number",
+          "secondaryDisplayField": "status",
+          "fields": [
+            {
+              "id": "number",
+              "label": "Number",
+              "type": "STRING",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "engagementId",
+              "label": "Engagement",
+              "type": "REFERENCE",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "engagements",
+              "precision": {}
+            },
+            {
+              "id": "amount",
+              "label": "Amount",
+              "type": "DECIMAL_19_2",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {
+                "fractionDigits": 2,
+                "totalDigits": 19
+              }
+            },
+            {
+              "id": "status",
+              "label": "Status",
+              "type": "ENUM",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [
+                "DRAFT",
+                "ISSUED",
+                "PAID",
+                "VOID"
+              ],
+              "localizedEnumLabels": {
+                "DRAFT": "Draft",
+                "ISSUED": "Issued",
+                "PAID": "Paid",
+                "VOID": "Void"
+              },
+              "referenceEntity": "",
+              "precision": {}
+            }
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "onDelete": "RESTRICT",
+          "sourceEntity": "engagements",
+          "targetEntity": "clients",
+          "scope": "SAME_BUSINESS_PARTITION_ONLY",
+          "field": "clientId"
+        },
+        {
+          "onDelete": "RESTRICT",
+          "sourceEntity": "invoices",
+          "targetEntity": "engagements",
+          "scope": "SAME_BUSINESS_PARTITION_ONLY",
+          "field": "engagementId"
+        }
+      ],
+      "workflows": [
+        {
+          "id": "ENGAGEMENT_LIFECYCLE",
+          "subjectEntity": "engagements",
+          "stateField": "status",
+          "authority": "ACTIVE_BUSINESS_USER",
+          "uiTrigger": "ROW_ACTION_BUTTONS_FOR_ALLOWED_TRANSITIONS",
+          "transitions": [
+            {
+              "from": "PLANNED",
+              "to": "ACTIVE",
+              "localizedActionLabel": {
+                "de": "Aktiv",
+                "en": "Active",
+                "es": "Activo",
+                "fr": "Actif"
+              }
+            },
+            {
+              "from": "ACTIVE",
+              "to": "ON_HOLD",
+              "localizedActionLabel": {
+                "de": "Pausiert",
+                "en": "On hold",
+                "es": "En espera",
+                "fr": "En attente"
+              }
+            },
+            {
+              "from": "ON_HOLD",
+              "to": "ACTIVE",
+              "localizedActionLabel": {
+                "de": "Aktiv",
+                "en": "Active",
+                "es": "Activo",
+                "fr": "Actif"
+              }
+            },
+            {
+              "from": "ACTIVE",
+              "to": "COMPLETED",
+              "localizedActionLabel": {
+                "de": "Abgeschlossen",
+                "en": "Completed",
+                "es": "Completado",
+                "fr": "Terminé"
+              }
+            }
+          ]
+        },
+        {
+          "id": "INVOICE_LIFECYCLE",
+          "subjectEntity": "invoices",
+          "stateField": "status",
+          "authority": "ACTIVE_BUSINESS_USER",
+          "uiTrigger": "ROW_ACTION_BUTTONS_FOR_ALLOWED_TRANSITIONS",
+          "transitions": [
+            {
+              "from": "DRAFT",
+              "to": "ISSUED",
+              "localizedActionLabel": {
+                "de": "Ausgestellt",
+                "en": "Issued",
+                "es": "Emitida",
+                "fr": "Émise"
+              }
+            },
+            {
+              "from": "ISSUED",
+              "to": "PAID",
+              "localizedActionLabel": {
+                "de": "Bezahlt",
+                "en": "Paid",
+                "es": "Pagada",
+                "fr": "Payée"
+              }
+            },
+            {
+              "from": "DRAFT",
+              "to": "VOID",
+              "localizedActionLabel": {
+                "de": "Storniert",
+                "en": "Void",
+                "es": "Anulada",
+                "fr": "Annulée"
+              }
+            },
+            {
+              "from": "ISSUED",
+              "to": "VOID",
+              "localizedActionLabel": {
+                "de": "Storniert",
+                "en": "Void",
+                "es": "Anulada",
+                "fr": "Annulée"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "userId": "marie",
+      "person": "Marie",
+      "applicationId": "MARIE_RESTAURANT",
+      "business": "Restaurant",
+      "language": "Français",
+      "locale": "fr-FR",
+      "defaultTheme": "warm-hospitality",
+      "allowedThemes": [
+        "warm-hospitality",
+        "bistro-dark",
+        "high-contrast"
+      ],
+      "persistencePartition": "marie/marie_restaurant",
+      "administrationScope": "OWN_BUSINESS_ONLY",
+      "entities": [
+        {
+          "id": "menu-items",
+          "name": "Article du menu",
+          "displayField": "name",
+          "secondaryDisplayField": "category",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Nom",
+              "type": "STRING",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "category",
+              "label": "Catégorie",
+              "type": "STRING",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "price",
+              "label": "Prix",
+              "type": "DECIMAL_19_2",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {
+                "fractionDigits": 2,
+                "totalDigits": 19
+              }
+            }
+          ]
+        },
+        {
+          "id": "reservations",
+          "name": "Réservation",
+          "displayField": "guestName",
+          "secondaryDisplayField": "reservationDate",
+          "fields": [
+            {
+              "id": "guestName",
+              "label": "Nom du client",
+              "type": "STRING",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "reservationDate",
+              "label": "Date",
+              "type": "ISO_DATE",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "partySize",
+              "label": "Nombre de personnes",
+              "type": "INTEGER",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            }
+          ]
+        },
+        {
+          "id": "orders",
+          "name": "Commande",
+          "displayField": "tableNumber",
+          "secondaryDisplayField": "status",
+          "fields": [
+            {
+              "id": "tableNumber",
+              "label": "Table",
+              "type": "STRING",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "status",
+              "label": "Statut",
+              "type": "ENUM",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [
+                "NEW",
+                "PREPARING",
+                "READY",
+                "SERVED",
+                "CANCELLED"
+              ],
+              "localizedEnumLabels": {
+                "NEW": "Nouvelle",
+                "PREPARING": "En préparation",
+                "READY": "Prête",
+                "SERVED": "Servie",
+                "CANCELLED": "Annulée"
+              },
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "total",
+              "label": "Total",
+              "type": "DECIMAL_19_2",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {
+                "fractionDigits": 2,
+                "totalDigits": 19
+              }
+            }
+          ]
+        }
+      ],
+      "relationships": [],
+      "workflows": [
+        {
+          "id": "ORDER_LIFECYCLE",
+          "subjectEntity": "orders",
+          "stateField": "status",
+          "authority": "ACTIVE_BUSINESS_USER",
+          "uiTrigger": "ROW_ACTION_BUTTONS_FOR_ALLOWED_TRANSITIONS",
+          "transitions": [
+            {
+              "from": "NEW",
+              "to": "PREPARING",
+              "localizedActionLabel": {
+                "de": "In Zubereitung",
+                "en": "Preparing",
+                "es": "En preparación",
+                "fr": "En préparation"
+              }
+            },
+            {
+              "from": "PREPARING",
+              "to": "READY",
+              "localizedActionLabel": {
+                "de": "Bereit",
+                "en": "Ready",
+                "es": "Lista",
+                "fr": "Prête"
+              }
+            },
+            {
+              "from": "READY",
+              "to": "SERVED",
+              "localizedActionLabel": {
+                "de": "Serviert",
+                "en": "Served",
+                "es": "Servida",
+                "fr": "Servie"
+              }
+            },
+            {
+              "from": "NEW",
+              "to": "CANCELLED",
+              "localizedActionLabel": {
+                "de": "Storniert",
+                "en": "Cancelled",
+                "es": "Cancelada",
+                "fr": "Annulée"
+              }
+            },
+            {
+              "from": "PREPARING",
+              "to": "CANCELLED",
+              "localizedActionLabel": {
+                "de": "Storniert",
+                "en": "Cancelled",
+                "es": "Cancelada",
+                "fr": "Annulée"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "userId": "hans",
+      "person": "Hans",
+      "applicationId": "HANS_MARKETPLACE",
+      "business": "Marketplace",
+      "language": "Deutsch",
+      "locale": "de-DE",
+      "defaultTheme": "structured-commerce",
+      "allowedThemes": [
+        "structured-commerce",
+        "midnight-market",
+        "high-contrast"
+      ],
+      "persistencePartition": "hans/hans_marketplace",
+      "administrationScope": "OWN_BUSINESS_ONLY",
+      "entities": [
+        {
+          "id": "sellers",
+          "name": "Verkäufer",
+          "displayField": "name",
+          "secondaryDisplayField": "email",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Name",
+              "type": "STRING",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "email",
+              "label": "E-Mail",
+              "type": "EMAIL",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "status",
+              "label": "Status",
+              "type": "ENUM",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [
+                "PENDING",
+                "ACTIVE",
+                "SUSPENDED"
+              ],
+              "localizedEnumLabels": {
+                "PENDING": "Ausstehend",
+                "ACTIVE": "Aktiv",
+                "SUSPENDED": "Gesperrt"
+              },
+              "referenceEntity": "",
+              "precision": {}
+            }
+          ]
+        },
+        {
+          "id": "listings",
+          "name": "Angebot",
+          "displayField": "title",
+          "secondaryDisplayField": "price",
+          "fields": [
+            {
+              "id": "title",
+              "label": "Titel",
+              "type": "STRING",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "sellerId",
+              "label": "Verkäufer",
+              "type": "REFERENCE",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "sellers",
+              "precision": {}
+            },
+            {
+              "id": "price",
+              "label": "Preis",
+              "type": "DECIMAL_19_2",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {
+                "fractionDigits": 2,
+                "totalDigits": 19
+              }
+            }
+          ]
+        },
+        {
+          "id": "orders",
+          "name": "Bestellung",
+          "displayField": "number",
+          "secondaryDisplayField": "status",
+          "fields": [
+            {
+              "id": "number",
+              "label": "Nummer",
+              "type": "STRING",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "listingId",
+              "label": "Angebot",
+              "type": "REFERENCE",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "listings",
+              "precision": {}
+            },
+            {
+              "id": "status",
+              "label": "Status",
+              "type": "ENUM",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [
+                "PLACED",
+                "PAID",
+                "FULFILLED",
+                "CANCELLED"
+              ],
+              "localizedEnumLabels": {
+                "PLACED": "Aufgegeben",
+                "PAID": "Bezahlt",
+                "FULFILLED": "Erfüllt",
+                "CANCELLED": "Storniert"
+              },
+              "referenceEntity": "",
+              "precision": {}
+            }
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "onDelete": "RESTRICT",
+          "sourceEntity": "listings",
+          "targetEntity": "sellers",
+          "scope": "SAME_BUSINESS_PARTITION_ONLY",
+          "field": "sellerId"
+        },
+        {
+          "onDelete": "RESTRICT",
+          "sourceEntity": "orders",
+          "targetEntity": "listings",
+          "scope": "SAME_BUSINESS_PARTITION_ONLY",
+          "field": "listingId"
+        }
+      ],
+      "workflows": [
+        {
+          "id": "SELLER_LIFECYCLE",
+          "subjectEntity": "sellers",
+          "stateField": "status",
+          "authority": "ACTIVE_BUSINESS_USER",
+          "uiTrigger": "ROW_ACTION_BUTTONS_FOR_ALLOWED_TRANSITIONS",
+          "transitions": [
+            {
+              "from": "PENDING",
+              "to": "ACTIVE",
+              "localizedActionLabel": {
+                "de": "Aktiv",
+                "en": "Active",
+                "es": "Activo",
+                "fr": "Actif"
+              }
+            },
+            {
+              "from": "ACTIVE",
+              "to": "SUSPENDED",
+              "localizedActionLabel": {
+                "de": "Gesperrt",
+                "en": "Suspended",
+                "es": "Suspendido",
+                "fr": "Suspendu"
+              }
+            },
+            {
+              "from": "SUSPENDED",
+              "to": "ACTIVE",
+              "localizedActionLabel": {
+                "de": "Aktiv",
+                "en": "Active",
+                "es": "Activo",
+                "fr": "Actif"
+              }
+            }
+          ]
+        },
+        {
+          "id": "MARKET_ORDER_LIFECYCLE",
+          "subjectEntity": "orders",
+          "stateField": "status",
+          "authority": "ACTIVE_BUSINESS_USER",
+          "uiTrigger": "ROW_ACTION_BUTTONS_FOR_ALLOWED_TRANSITIONS",
+          "transitions": [
+            {
+              "from": "PLACED",
+              "to": "PAID",
+              "localizedActionLabel": {
+                "de": "Bezahlt",
+                "en": "Paid",
+                "es": "Pagada",
+                "fr": "Payée"
+              }
+            },
+            {
+              "from": "PAID",
+              "to": "FULFILLED",
+              "localizedActionLabel": {
+                "de": "Erfüllt",
+                "en": "Fulfilled",
+                "es": "Completado",
+                "fr": "Traitée"
+              }
+            },
+            {
+              "from": "PLACED",
+              "to": "CANCELLED",
+              "localizedActionLabel": {
+                "de": "Storniert",
+                "en": "Cancelled",
+                "es": "Cancelada",
+                "fr": "Annulée"
+              }
+            },
+            {
+              "from": "PAID",
+              "to": "CANCELLED",
+              "localizedActionLabel": {
+                "de": "Storniert",
+                "en": "Cancelled",
+                "es": "Cancelada",
+                "fr": "Annulée"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "userId": "sofia",
+      "person": "Sofia",
+      "applicationId": "SOFIA_PROPERTY",
+      "business": "Property Management",
+      "language": "Español",
+      "locale": "es-ES",
+      "defaultTheme": "calm-property",
+      "allowedThemes": [
+        "calm-property",
+        "terracotta",
+        "high-contrast"
+      ],
+      "persistencePartition": "sofia/sofia_property",
+      "administrationScope": "OWN_BUSINESS_ONLY",
+      "entities": [
+        {
+          "id": "properties",
+          "name": "Propiedad",
+          "displayField": "name",
+          "secondaryDisplayField": "address",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Nombre",
+              "type": "STRING",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "address",
+              "label": "Dirección",
+              "type": "STRING",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "status",
+              "label": "Estado",
+              "type": "ENUM",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [
+                "AVAILABLE",
+                "OCCUPIED",
+                "MAINTENANCE"
+              ],
+              "localizedEnumLabels": {
+                "AVAILABLE": "Disponible",
+                "OCCUPIED": "Ocupada",
+                "MAINTENANCE": "Mantenimiento"
+              },
+              "referenceEntity": "",
+              "precision": {}
+            }
+          ]
+        },
+        {
+          "id": "tenants",
+          "name": "Inquilino",
+          "displayField": "name",
+          "secondaryDisplayField": "email",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Nombre",
+              "type": "STRING",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "email",
+              "label": "Correo",
+              "type": "EMAIL",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "phone",
+              "label": "Teléfono",
+              "type": "STRING",
+              "required": false,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            }
+          ]
+        },
+        {
+          "id": "leases",
+          "name": "Contrato",
+          "displayField": "propertyId",
+          "secondaryDisplayField": "status",
+          "fields": [
+            {
+              "id": "propertyId",
+              "label": "Propiedad",
+              "type": "REFERENCE",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "properties",
+              "precision": {}
+            },
+            {
+              "id": "tenantId",
+              "label": "Inquilino",
+              "type": "REFERENCE",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "tenants",
+              "precision": {}
+            },
+            {
+              "id": "status",
+              "label": "Estado",
+              "type": "ENUM",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [
+                "DRAFT",
+                "ACTIVE",
+                "EXPIRED",
+                "TERMINATED"
+              ],
+              "localizedEnumLabels": {
+                "DRAFT": "Borrador",
+                "ACTIVE": "Activo",
+                "EXPIRED": "Vencido",
+                "TERMINATED": "Terminado"
+              },
+              "referenceEntity": "",
+              "precision": {}
+            }
+          ]
+        },
+        {
+          "id": "maintenance",
+          "name": "Solicitud de mantenimiento",
+          "displayField": "description",
+          "secondaryDisplayField": "status",
+          "fields": [
+            {
+              "id": "propertyId",
+              "label": "Propiedad",
+              "type": "REFERENCE",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "properties",
+              "precision": {}
+            },
+            {
+              "id": "description",
+              "label": "Descripción",
+              "type": "STRING",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [],
+              "localizedEnumLabels": {},
+              "referenceEntity": "",
+              "precision": {}
+            },
+            {
+              "id": "status",
+              "label": "Estado",
+              "type": "ENUM",
+              "required": true,
+              "editable": true,
+              "generated": false,
+              "enumValues": [
+                "OPEN",
+                "ASSIGNED",
+                "IN_PROGRESS",
+                "COMPLETED",
+                "CLOSED"
+              ],
+              "localizedEnumLabels": {
+                "OPEN": "Abierta",
+                "ASSIGNED": "Asignada",
+                "IN_PROGRESS": "En progreso",
+                "COMPLETED": "Completado",
+                "CLOSED": "Cerrada"
+              },
+              "referenceEntity": "",
+              "precision": {}
+            }
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "onDelete": "RESTRICT",
+          "sourceEntity": "leases",
+          "targetEntity": "properties",
+          "scope": "SAME_BUSINESS_PARTITION_ONLY",
+          "field": "propertyId"
+        },
+        {
+          "onDelete": "RESTRICT",
+          "sourceEntity": "leases",
+          "targetEntity": "tenants",
+          "scope": "SAME_BUSINESS_PARTITION_ONLY",
+          "field": "tenantId"
+        },
+        {
+          "onDelete": "RESTRICT",
+          "sourceEntity": "maintenance",
+          "targetEntity": "properties",
+          "scope": "SAME_BUSINESS_PARTITION_ONLY",
+          "field": "propertyId"
+        }
+      ],
+      "workflows": [
+        {
+          "id": "LEASE_LIFECYCLE",
+          "subjectEntity": "leases",
+          "stateField": "status",
+          "authority": "ACTIVE_BUSINESS_USER",
+          "uiTrigger": "ROW_ACTION_BUTTONS_FOR_ALLOWED_TRANSITIONS",
+          "transitions": [
+            {
+              "from": "DRAFT",
+              "to": "ACTIVE",
+              "localizedActionLabel": {
+                "de": "Aktiv",
+                "en": "Active",
+                "es": "Activo",
+                "fr": "Actif"
+              }
+            },
+            {
+              "from": "ACTIVE",
+              "to": "EXPIRED",
+              "localizedActionLabel": {
+                "de": "Abgelaufen",
+                "en": "Expired",
+                "es": "Vencido",
+                "fr": "Expiré"
+              }
+            },
+            {
+              "from": "ACTIVE",
+              "to": "TERMINATED",
+              "localizedActionLabel": {
+                "de": "Beendet",
+                "en": "Terminated",
+                "es": "Terminado",
+                "fr": "Résilié"
+              }
+            }
+          ]
+        },
+        {
+          "id": "MAINTENANCE_LIFECYCLE",
+          "subjectEntity": "maintenance",
+          "stateField": "status",
+          "authority": "ACTIVE_BUSINESS_USER",
+          "uiTrigger": "ROW_ACTION_BUTTONS_FOR_ALLOWED_TRANSITIONS",
+          "transitions": [
+            {
+              "from": "OPEN",
+              "to": "ASSIGNED",
+              "localizedActionLabel": {
+                "de": "Zugewiesen",
+                "en": "Assigned",
+                "es": "Asignada",
+                "fr": "Assignée"
+              }
+            },
+            {
+              "from": "ASSIGNED",
+              "to": "IN_PROGRESS",
+              "localizedActionLabel": {
+                "de": "In Bearbeitung",
+                "en": "In progress",
+                "es": "En progreso",
+                "fr": "En cours"
+              }
+            },
+            {
+              "from": "IN_PROGRESS",
+              "to": "COMPLETED",
+              "localizedActionLabel": {
+                "de": "Abgeschlossen",
+                "en": "Completed",
+                "es": "Completado",
+                "fr": "Terminé"
+              }
+            },
+            {
+              "from": "COMPLETED",
+              "to": "CLOSED",
+              "localizedActionLabel": {
+                "de": "Geschlossen",
+                "en": "Closed",
+                "es": "Cerrada",
+                "fr": "Fermée"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
