@@ -28,7 +28,7 @@ persisted - so this is a drop-in replacement.
 java -jar dist/fourbusiness-app.jar
 ```
 
-Then open `http://127.0.0.1:8080/`. Use the user switcher in the top bar to move between the
+Then open `http://127.0.0.1:8091/`. Use the user switcher in the top bar to move between the
 four demo identities (Robert/Consulting/English, Marie/Restaurant/French,
 Hans/Marketplace/German, Sofia/Property Management/Spanish). Every business starts pre-loaded
 with seed data (see below) so there's something to look at immediately, and an Administration
